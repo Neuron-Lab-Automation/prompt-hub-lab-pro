@@ -19,15 +19,28 @@ export function LoginForm() {
 
     try {
       if (isSignUp) {
-        // Mock signup
-        console.log('Mock signup:', { email, password });
-        localStorage.setItem('mockUserLoggedIn', 'true');
-        window.location.reload();
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              name: email.split('@')[0], // Use email prefix as default name
+            }
+          }
+        });
+
+        if (error) throw error;
+
+        if (data.user && !data.session) {
+          setError('Por favor verifica tu email para completar el registro');
+        }
       } else {
-        // Mock login
-        console.log('Mock login:', { email, password });
-        localStorage.setItem('mockUserLoggedIn', 'true');
-        window.location.reload();
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) throw error;
       }
     } catch (error) {
       setError(error instanceof Error ? error.message : 'An error occurred');

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Zap, User, Settings, LogOut, Plus, PlayCircle, BarChart3, Shield, Building, Users, MessageSquare } from 'lucide-react';
+import { useAuth } from './AuthProvider';
 import { Button } from './ui/Button';
 import { Badge } from './ui/Badge';
 import { TokenUsageModal } from './TokenUsageModal';
@@ -17,6 +18,7 @@ interface HeaderProps {
 }
 
 export function Header({ onNewPrompt, onOpenPlayground, onOpenDashboard, currentView, onToggleAdmin, isAdmin }: HeaderProps) {
+  const { signOut } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showTokenModal, setShowTokenModal] = useState(false);
   const [showOrganizationModal, setShowOrganizationModal] = useState(false);
@@ -221,8 +223,7 @@ export function Header({ onNewPrompt, onOpenPlayground, onOpenDashboard, current
                       <button
                         className="w-full px-4 py-2 text-left text-sm hover:bg-gray-700 flex items-center gap-2 text-gray-300"
                         onClick={() => {
-                          localStorage.removeItem('mockUserLoggedIn');
-                          window.location.reload();
+                          signOut();
                         }}
                       >
                         <LogOut className="h-4 w-4" />
