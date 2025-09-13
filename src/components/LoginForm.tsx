@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/Card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/Card';
 import { Zap, Mail, Lock, AlertCircle } from 'lucide-react';
 
 export function LoginForm() {
@@ -19,7 +19,7 @@ export function LoginForm() {
 
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -28,13 +28,18 @@ export function LoginForm() {
             }
           }
         });
+
         if (error) throw error;
-        setError('Check your email for the confirmation link!');
+
+        if (data.user && !data.session) {
+          setError('Por favor verifica tu email para completar el registro');
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
+
         if (error) throw error;
       }
     } catch (error) {
@@ -45,7 +50,7 @@ export function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex items-center justify-center gap-2 mb-4">
@@ -53,20 +58,20 @@ export function LoginForm() {
               <Zap className="h-8 w-8 text-white" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold text-gray-900">
+          <CardTitle className="text-2xl font-bold text-gray-100">
             {isSignUp ? 'Crear cuenta' : 'Iniciar sesión'}
           </CardTitle>
-          <p className="text-gray-600 mt-2">
+          <CardDescription className="text-gray-400 mt-2">
             {isSignUp 
               ? 'Únete a PromptHub v2 y optimiza tus prompts de IA'
               : 'Accede a tu biblioteca de prompts'
             }
-          </p>
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Email
               </label>
               <div className="relative">
@@ -83,7 +88,7 @@ export function LoginForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Contraseña
               </label>
               <div className="relative">
@@ -100,9 +105,9 @@ export function LoginForm() {
             </div>
 
             {error && (
-              <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                <AlertCircle className="h-4 w-4 text-red-500" />
-                <span className="text-sm text-red-700">{error}</span>
+              <div className="flex items-center gap-2 p-3 bg-red-900/20 border border-red-700 rounded-lg">
+                <AlertCircle className="h-4 w-4 text-red-400" />
+                <span className="text-sm text-red-300">{error}</span>
               </div>
             )}
 
@@ -128,7 +133,7 @@ export function LoginForm() {
                   setIsSignUp(!isSignUp);
                   setError(null);
                 }}
-                className="text-sm text-blue-600 hover:text-blue-700"
+                className="text-sm text-blue-400 hover:text-blue-300"
               >
                 {isSignUp 
                   ? '¿Ya tienes cuenta? Inicia sesión'
