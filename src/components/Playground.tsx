@@ -92,14 +92,14 @@ export function Playground({ isOpen, onClose, initialPrompt = '' }: PlaygroundPr
   const showTemperatureControls = model?.supports_temperature && selectedModel !== 'gpt-5-mini-2025-08-07';
 
   return (
-    <div className="fixed inset-0 z-50 bg-gray-900">
+    <div className="fixed inset-0 z-50 bg-gray-100">
       {/* Header */}
-      <div className="bg-gray-800 border-b border-gray-700 px-6 py-4 flex items-center justify-between">
+      <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-2 rounded-lg">
             <Play className="h-5 w-5 text-white" />
           </div>
-          <h1 className="text-lg font-semibold text-gray-100">Playground</h1>
+          <h1 className="text-lg font-semibold text-gray-900">Playground</h1>
         </div>
         <Button variant="ghost" size="icon" onClick={onClose}>
           <X className="h-5 w-5" />
@@ -178,14 +178,14 @@ export function Playground({ isOpen, onClose, initialPrompt = '' }: PlaygroundPr
                 </div>
               )}
 
-              <div className="bg-gray-800 p-3 rounded-lg">
+              <div className="bg-gray-50 p-3 rounded-lg">
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="text-gray-400">Tokens estimados (input):</span>
+                    <span className="text-gray-600">Tokens estimados (input):</span>
                     <span className="ml-2 font-medium">{estimatedInputTokens}</span>
                   </div>
                   <div>
-                    <span className="text-gray-400">Costo estimado:</span>
+                    <span className="text-gray-600">Costo estimado:</span>
                     <span className="ml-2 font-medium">{formatCurrency(estimatedCost)}</span>
                   </div>
                 </div>
@@ -203,10 +203,10 @@ export function Playground({ isOpen, onClose, initialPrompt = '' }: PlaygroundPr
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Escribe tu prompt aquí..."
-                className="w-full h-64 p-3 border border-gray-600 bg-gray-800 text-gray-100 rounded-lg resize-none focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-mono text-sm"
+                className="w-full h-64 p-3 border border-gray-300 rounded-lg resize-none focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 font-mono text-sm"
               />
               <div className="flex items-center justify-between mt-4">
-                <div className="text-sm text-gray-400">
+                <div className="text-sm text-gray-500">
                   {prompt.length} caracteres · {estimatedInputTokens} tokens
                 </div>
                 <Button
@@ -232,7 +232,7 @@ export function Playground({ isOpen, onClose, initialPrompt = '' }: PlaygroundPr
         </div>
 
         {/* Right Panel - Results */}
-        <div className="w-96 border-l border-gray-700 p-6 space-y-6 overflow-y-auto bg-gray-800">
+        <div className="w-96 border-l border-gray-200 p-6 space-y-6 overflow-y-auto bg-white">
           {/* Results */}
           <Card>
             <CardHeader>
@@ -241,12 +241,12 @@ export function Playground({ isOpen, onClose, initialPrompt = '' }: PlaygroundPr
             <CardContent>
               {result ? (
                 <div className="prose prose-sm max-w-none">
-                  <div className="bg-gray-900 p-3 rounded-lg whitespace-pre-wrap font-mono text-sm text-gray-100">
+                  <div className="bg-gray-50 p-3 rounded-lg whitespace-pre-wrap font-mono text-sm">
                     {result}
                   </div>
                 </div>
               ) : (
-                <div className="text-gray-400 text-center py-8">
+                <div className="text-gray-500 text-center py-8">
                   Ejecuta un prompt para ver los resultados
                 </div>
               )}
@@ -264,28 +264,28 @@ export function Playground({ isOpen, onClose, initialPrompt = '' }: PlaygroundPr
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-400 flex items-center gap-1">
+                  <span className="text-gray-600 flex items-center gap-1">
                     <Zap className="h-3 w-3" />
                     Tokens Input
                   </span>
                   <span className="font-medium">{lastExecution.inputTokens}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-400 flex items-center gap-1">
+                  <span className="text-gray-600 flex items-center gap-1">
                     <Zap className="h-3 w-3" />
                     Tokens Output
                   </span>
                   <span className="font-medium">{lastExecution.outputTokens}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-400 flex items-center gap-1">
+                  <span className="text-gray-600 flex items-center gap-1">
                     <Clock className="h-3 w-3" />
                     Latencia
                   </span>
                   <span className="font-medium">{lastExecution.latency}ms</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-400 flex items-center gap-1">
+                  <span className="text-gray-600 flex items-center gap-1">
                     <DollarSign className="h-3 w-3" />
                     Costo
                   </span>
@@ -303,19 +303,19 @@ export function Playground({ isOpen, onClose, initialPrompt = '' }: PlaygroundPr
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="text-sm">
-                  <span className="text-gray-400">Proveedor:</span>
+                  <span className="text-gray-600">Proveedor:</span>
                   <span className="ml-2 font-medium capitalize">{model.provider}</span>
                 </div>
                 <div className="text-sm">
-                  <span className="text-gray-400">Input:</span>
+                  <span className="text-gray-600">Input:</span>
                   <span className="ml-2 font-medium">${model.input_cost}/M tokens</span>
                 </div>
                 <div className="text-sm">
-                  <span className="text-gray-400">Output:</span>
+                  <span className="text-gray-600">Output:</span>
                   <span className="ml-2 font-medium">${model.output_cost}/M tokens</span>
                 </div>
                 <div className="text-sm">
-                  <span className="text-gray-400">Max tokens:</span>
+                  <span className="text-gray-600">Max tokens:</span>
                   <span className="ml-2 font-medium">{model.max_tokens.toLocaleString()}</span>
                 </div>
               </CardContent>

@@ -18,7 +18,6 @@ export interface Database {
           plan_id: string
           tokens_used: number
           tokens_limit: number
-          stripe_customer_id: string | null
           created_at: string
           updated_at: string
         }
@@ -27,10 +26,9 @@ export interface Database {
           email: string
           name: string
           role?: 'superadmin' | 'admin' | 'editor' | 'viewer' | 'user'
-          plan_id?: string
+          plan_id: string
           tokens_used?: number
           tokens_limit?: number
-          stripe_customer_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -42,7 +40,6 @@ export interface Database {
           plan_id?: string
           tokens_used?: number
           tokens_limit?: number
-          stripe_customer_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -54,8 +51,6 @@ export interface Database {
           price: number
           tokens_included: number
           overage_price: number
-          stripe_price_id: string | null
-          active: boolean
           created_at: string
           updated_at: string
         }
@@ -65,8 +60,6 @@ export interface Database {
           price: number
           tokens_included: number
           overage_price: number
-          stripe_price_id?: string | null
-          active?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -76,8 +69,6 @@ export interface Database {
           price?: number
           tokens_included?: number
           overage_price?: number
-          stripe_price_id?: string | null
-          active?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -92,9 +83,9 @@ export interface Database {
           tags: string[]
           type: 'system' | 'user'
           user_id: string | null
-          is_favorite: boolean
           created_at: string
           updated_at: string
+          is_favorite: boolean
         }
         Insert: {
           id?: string
@@ -102,12 +93,12 @@ export interface Database {
           content_es: string
           content_en: string
           category: string
-          tags?: string[]
-          type?: 'system' | 'user'
+          tags: string[]
+          type: 'system' | 'user'
           user_id?: string | null
-          is_favorite?: boolean
           created_at?: string
           updated_at?: string
+          is_favorite?: boolean
         }
         Update: {
           id?: string
@@ -118,9 +109,9 @@ export interface Database {
           tags?: string[]
           type?: 'system' | 'user'
           user_id?: string | null
-          is_favorite?: boolean
           created_at?: string
           updated_at?: string
+          is_favorite?: boolean
         }
       }
       prompt_stats: {
@@ -143,10 +134,10 @@ export interface Database {
         Insert: {
           id?: string
           prompt_id: string
-          characters_es?: number
-          characters_en?: number
-          tokens_es?: number
-          tokens_en?: number
+          characters_es: number
+          characters_en: number
+          tokens_es: number
+          tokens_en: number
           visits?: number
           copies?: number
           improvements?: number
@@ -171,6 +162,35 @@ export interface Database {
           ctr?: number
           created_at?: string
           updated_at?: string
+        }
+      }
+      prompt_versions: {
+        Row: {
+          id: string
+          prompt_id: string
+          version: number
+          content_es: string
+          content_en: string
+          improvement_reason: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          prompt_id: string
+          version: number
+          content_es: string
+          content_en: string
+          improvement_reason?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          prompt_id?: string
+          version?: number
+          content_es?: string
+          content_en?: string
+          improvement_reason?: string | null
+          created_at?: string
         }
       }
       categories: {
@@ -266,94 +286,138 @@ export interface Database {
           updated_at?: string
         }
       }
-      organizations: {
+      executions: {
         Row: {
           id: string
-          name: string
-          owner_id: string
-          plan_id: string
-          team_size: number
-          monthly_cost: number
-          tokens_included: number
-          stripe_subscription_id: string | null
+          prompt_id: string
+          user_id: string
+          provider: string
+          model: string
+          input_tokens: number
+          output_tokens: number
+          total_tokens: number
+          cost: number
+          latency: number
+          result: string
+          parameters: Json
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          prompt_id: string
+          user_id: string
+          provider: string
+          model: string
+          input_tokens: number
+          output_tokens: number
+          total_tokens: number
+          cost: number
+          latency: number
+          result: string
+          parameters: Json
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          prompt_id?: string
+          user_id?: string
+          provider?: string
+          model?: string
+          input_tokens?: number
+          output_tokens?: number
+          total_tokens?: number
+          cost?: number
+          latency?: number
+          result?: string
+          parameters?: Json
+          created_at?: string
+        }
+      }
+      token_prices: {
+        Row: {
+          id: string
+          model: string
+          input_cost_base: number
+          output_cost_base: number
+          input_margin_percent: number
+          output_margin_percent: number
+          currency: string
+          fx_rate: number
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          model: string
+          input_cost_base: number
+          output_cost_base: number
+          input_margin_percent: number
+          output_margin_percent: number
+          currency?: string
+          fx_rate?: number
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          model?: string
+          input_cost_base?: number
+          output_cost_base?: number
+          input_margin_percent?: number
+          output_margin_percent?: number
+          currency?: string
+          fx_rate?: number
+          updated_at?: string
+        }
+      }
+      coupons: {
+        Row: {
+          id: string
+          code: string
+          type: 'percentage' | 'fixed'
+          value: number
+          max_uses: number | null
+          used_count: number
+          expires_at: string | null
+          scope: 'plan' | 'addon' | 'global'
           active: boolean
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
-          name: string
-          owner_id: string
-          plan_id: string
-          team_size: number
-          monthly_cost: number
-          tokens_included: number
-          stripe_subscription_id?: string | null
+          code: string
+          type: 'percentage' | 'fixed'
+          value: number
+          max_uses?: number | null
+          used_count?: number
+          expires_at?: string | null
+          scope?: 'plan' | 'addon' | 'global'
           active?: boolean
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
-          name?: string
-          owner_id?: string
-          plan_id?: string
-          team_size?: number
-          monthly_cost?: number
-          tokens_included?: number
-          stripe_subscription_id?: string | null
+          code?: string
+          type?: 'percentage' | 'fixed'
+          value?: number
+          max_uses?: number | null
+          used_count?: number
+          expires_at?: string | null
+          scope?: 'plan' | 'addon' | 'global'
           active?: boolean
           created_at?: string
           updated_at?: string
         }
       }
-      organization_plans: {
-        Row: {
-          id: string
-          name: string
-          price_per_user: number
-          tokens_per_user: number
-          features: string[]
-          min_team_size: number
-          stripe_price_id: string | null
-          active: boolean
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id: string
-          name: string
-          price_per_user: number
-          tokens_per_user: number
-          features?: string[]
-          min_team_size?: number
-          stripe_price_id?: string | null
-          active?: boolean
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          name?: string
-          price_per_user?: number
-          tokens_per_user?: number
-          features?: string[]
-          min_team_size?: number
-          stripe_price_id?: string | null
-          active?: boolean
-          created_at?: string
-          updated_at?: string
-        }
-      }
-      referral_programs: {
+      affiliates: {
         Row: {
           id: string
           user_id: string
-          referral_code: string
-          referral_url: string
+          ref_code: string
+          commission_percent: number
           total_referrals: number
           total_earnings: number
-          commission_rate: number
+          payout_method: string | null
           active: boolean
           created_at: string
           updated_at: string
@@ -361,11 +425,11 @@ export interface Database {
         Insert: {
           id?: string
           user_id: string
-          referral_code: string
-          referral_url: string
+          ref_code: string
+          commission_percent?: number
           total_referrals?: number
           total_earnings?: number
-          commission_rate?: number
+          payout_method?: string | null
           active?: boolean
           created_at?: string
           updated_at?: string
@@ -373,131 +437,49 @@ export interface Database {
         Update: {
           id?: string
           user_id?: string
-          referral_code?: string
-          referral_url?: string
+          ref_code?: string
+          commission_percent?: number
           total_referrals?: number
           total_earnings?: number
-          commission_rate?: number
+          payout_method?: string | null
           active?: boolean
           created_at?: string
           updated_at?: string
         }
       }
-      support_tickets: {
+      audit_logs: {
         Row: {
           id: string
-          user_id: string
-          subject: string
-          message: string
-          category: 'billing' | 'technical' | 'feature_request' | 'bug_report' | 'general'
-          priority: 'low' | 'medium' | 'high' | 'urgent'
-          status: 'open' | 'in_progress' | 'waiting_response' | 'resolved' | 'closed'
-          assigned_to: string | null
+          user_id: string | null
+          action: string
+          resource_type: string
+          resource_id: string | null
+          details: Json
+          ip_address: string | null
+          user_agent: string | null
           created_at: string
-          updated_at: string
-          last_response_at: string | null
         }
         Insert: {
           id?: string
-          user_id: string
-          subject: string
-          message: string
-          category?: 'billing' | 'technical' | 'feature_request' | 'bug_report' | 'general'
-          priority?: 'low' | 'medium' | 'high' | 'urgent'
-          status?: 'open' | 'in_progress' | 'waiting_response' | 'resolved' | 'closed'
-          assigned_to?: string | null
+          user_id?: string | null
+          action: string
+          resource_type: string
+          resource_id?: string | null
+          details: Json
+          ip_address?: string | null
+          user_agent?: string | null
           created_at?: string
-          updated_at?: string
-          last_response_at?: string | null
         }
         Update: {
           id?: string
-          user_id?: string
-          subject?: string
-          message?: string
-          category?: 'billing' | 'technical' | 'feature_request' | 'bug_report' | 'general'
-          priority?: 'low' | 'medium' | 'high' | 'urgent'
-          status?: 'open' | 'in_progress' | 'waiting_response' | 'resolved' | 'closed'
-          assigned_to?: string | null
+          user_id?: string | null
+          action?: string
+          resource_type?: string
+          resource_id?: string | null
+          details?: Json
+          ip_address?: string | null
+          user_agent?: string | null
           created_at?: string
-          updated_at?: string
-          last_response_at?: string | null
-        }
-      }
-      email_templates: {
-        Row: {
-          id: string
-          name: string
-          subject: string
-          html_content: string
-          text_content: string
-          variables: string[]
-          type: 'welcome' | 'payment_confirmation' | 'access_granted' | 'support_response' | 'custom'
-          active: boolean
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          name: string
-          subject: string
-          html_content: string
-          text_content: string
-          variables?: string[]
-          type?: 'welcome' | 'payment_confirmation' | 'access_granted' | 'support_response' | 'custom'
-          active?: boolean
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          name?: string
-          subject?: string
-          html_content?: string
-          text_content?: string
-          variables?: string[]
-          type?: 'welcome' | 'payment_confirmation' | 'access_granted' | 'support_response' | 'custom'
-          active?: boolean
-          created_at?: string
-          updated_at?: string
-        }
-      }
-      smtp_config: {
-        Row: {
-          id: string
-          host: string
-          port: number
-          username: string
-          password: string
-          from_email: string
-          from_name: string
-          use_tls: boolean
-          active: boolean
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          host: string
-          port: number
-          username: string
-          password: string
-          from_email: string
-          from_name: string
-          use_tls?: boolean
-          active?: boolean
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          host?: string
-          port?: number
-          username?: string
-          password?: string
-          from_email?: string
-          from_name?: string
-          use_tls?: boolean
-          active?: boolean
-          updated_at?: string
         }
       }
     }
@@ -505,41 +487,10 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      increment_prompt_stats: {
-        Args: {
-          p_prompt_id: string
-          p_field: string
-        }
-        Returns: void
-      }
-      add_user_tokens: {
-        Args: {
-          p_user_id: string
-          p_tokens: number
-        }
-        Returns: void
-      }
-      process_referral: {
-        Args: {
-          p_referral_code: string
-          p_referred_user_id: string
-          p_purchase_amount: number
-        }
-        Returns: void
-      }
+      [_ in never]: never
     }
     Enums: {
-      user_role: 'superadmin' | 'admin' | 'editor' | 'viewer' | 'user'
-      prompt_type: 'system' | 'user'
-      coupon_type: 'percentage' | 'fixed'
-      coupon_scope: 'plan' | 'addon' | 'global'
-      organization_member_role: 'owner' | 'admin' | 'member'
-      referral_status: 'pending' | 'confirmed' | 'paid'
-      popup_trigger: 'always' | 'usage_threshold' | 'time_based'
-      email_template_type: 'welcome' | 'payment_confirmation' | 'access_granted' | 'support_response' | 'custom'
-      support_category: 'billing' | 'technical' | 'feature_request' | 'bug_report' | 'general'
-      support_priority: 'low' | 'medium' | 'high' | 'urgent'
-      support_status: 'open' | 'in_progress' | 'waiting_response' | 'resolved' | 'closed'
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
