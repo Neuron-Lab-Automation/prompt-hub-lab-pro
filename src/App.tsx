@@ -25,7 +25,6 @@ import { CreatePromptModal } from './components/CreatePromptModal';
 import { Playground } from './components/Playground';
 import { VersionHistoryModal } from './components/VersionHistoryModal';
 import { Pagination } from './components/Pagination';
-import { ImprovementPreviewModal } from './components/ImprovementPreviewModal';
 import { ToastContainer } from './components/ui/Toast';
 import { useToast } from './hooks/useToast';
 import { mockUsers, mockPlans, mockCoupons, mockAffiliates, mockExecutions, mockTokenPromotions } from './data/mockAdminData';
@@ -51,8 +50,6 @@ function AppContent() {
   const [isVersionHistoryOpen, setIsVersionHistoryOpen] = useState(false);
   const [historyPrompt, setHistoryPrompt] = useState<Prompt | null>(null);
   const [playgroundPrompt, setPlaygroundPrompt] = useState('');
-  const [improvementPrompt, setImprovementPrompt] = useState<Prompt | null>(null);
-  const [isImprovementPreviewOpen, setIsImprovementPreviewOpen] = useState(false);
   const [currentView, setCurrentView] = useState<'prompts' | 'dashboard'>('prompts');
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [adminView, setAdminView] = useState('dashboard');
@@ -240,8 +237,12 @@ function AppContent() {
   };
 
   const handleImprovePrompt = async (prompt: Prompt) => {
-    setImprovementPrompt(prompt);
-    setIsImprovementPreviewOpen(true);
+    try {
+      const result = await improvePrompt(prompt.id, 'es');
+      toast.success('Mejora aplicada', `Nueva versión ${result.version.version} creada exitosamente`);
+    } catch (error) {
+      toast.error('Error al mejorar', error instanceof Error ? error.message : 'Error desconocido');
+    }
   };
 
   const handleTranslatePrompt = async (prompt: Prompt, language: 'es' | 'en') => {
@@ -290,27 +291,6 @@ function AppContent() {
   const handleNewPrompt = () => {
     setCurrentView('prompts');
     setIsCreateModalOpen(true);
-  };
-  const handleAcceptImprovement = async () => {
-    if (!improvementPrompt) return;
-    
-    try {
-      const result = await improvePrompt(improvementPrompt.id, 'es');
-      toast.success('Mejora aplicada', `Nueva versión ${result.version.version} creada exitosamente`);
-      setIsImprovementPreviewOpen(false);
-      setImprovementPrompt(null);
-    } catch (error) {
-      toast.error('Error al mejorar', error instanceof Error ? error.message : 'Error desconocido');
-    }
-  };
-
-  const handleRegenerateImprovement = async () => {
-    if (!improvementPrompt) return;
-    
-    // In a real app, this would call the improve function again with different parameters
-    // For now, we'll just simulate a regeneration
-    console.log('Regenerating improvement for prompt:', improvementPrompt.id);
-    alert('Generando nueva mejora...');
   };
 
   // Admin handlers
@@ -864,14 +844,6 @@ function AppContent() {
         isOpen={isVersionHistoryOpen}
         onClose={() => setIsVersionHistoryOpen(false)}
         onRestoreVersion={handleRestoreVersion}
-      />
-
-      <ImprovementPreviewModal
-        prompt={improvementPrompt}
-        isOpen={isImprovementPreviewOpen}
-        onClose={() => setIsImprovementPreviewOpen(false)}
-        onAccept={handleAcceptImprovement}
-        onRegenerate={handleRegenerateImprovement}
       />
 
       <TokenWarningModal

@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { Zap, User, Settings, LogOut, Plus, PlayCircle, BarChart3, Shield, Building, Users, MessageSquare } from 'lucide-react';
+import { Zap, User, Settings, LogOut, Plus, PlayCircle, BarChart3, Shield, MessageSquare } from 'lucide-react';
 import { useAuth } from './AuthProvider';
 import { Button } from './ui/Button';
 import { Badge } from './ui/Badge';
 import { TokenUsageModal } from './TokenUsageModal';
-import { CreateOrganizationModal } from './CreateOrganizationModal';
-import { ReferralProgramModal } from './ReferralProgramModal';
 import { SupportModal } from './SupportModal';
 
 interface HeaderProps {
@@ -21,8 +19,6 @@ export function Header({ onNewPrompt, onOpenPlayground, onOpenDashboard, current
   const { signOut } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showTokenModal, setShowTokenModal] = useState(false);
-  const [showOrganizationModal, setShowOrganizationModal] = useState(false);
-  const [showReferralModal, setShowReferralModal] = useState(false);
   const [showSupportModal, setShowSupportModal] = useState(false);
 
   // Mock user data - esto se reemplazará con datos reales de Clerk
@@ -184,26 +180,6 @@ export function Header({ onNewPrompt, onOpenPlayground, onOpenDashboard, current
                       <button
                         className="w-full px-4 py-2 text-left text-sm hover:bg-gray-700 flex items-center gap-2 text-gray-300"
                         onClick={() => {
-                          setShowOrganizationModal(true);
-                          setShowUserMenu(false);
-                        }}
-                      >
-                        <Building className="h-4 w-4" />
-                        Crear Organización
-                      </button>
-                      <button
-                        className="w-full px-4 py-2 text-left text-sm hover:bg-gray-700 flex items-center gap-2 text-gray-300"
-                        onClick={() => {
-                          setShowReferralModal(true);
-                          setShowUserMenu(false);
-                        }}
-                      >
-                        <Users className="h-4 w-4" />
-                        Programa de Referencias
-                      </button>
-                      <button
-                        className="w-full px-4 py-2 text-left text-sm hover:bg-gray-700 flex items-center gap-2 text-gray-300"
-                        onClick={() => {
                           setShowUserMenu(false);
                         }}
                       >
@@ -242,20 +218,6 @@ export function Header({ onNewPrompt, onOpenPlayground, onOpenDashboard, current
         isOpen={showTokenModal}
         onClose={() => setShowTokenModal(false)}
         user={user}
-      />
-
-      <CreateOrganizationModal
-        isOpen={showOrganizationModal}
-        onClose={() => setShowOrganizationModal(false)}
-        onCreateOrganization={(org) => {
-          console.log('Creating organization:', org);
-          // In real app, this would call Supabase
-        }}
-      />
-
-      <ReferralProgramModal
-        isOpen={showReferralModal}
-        onClose={() => setShowReferralModal(false)}
       />
 
       <SupportModal
